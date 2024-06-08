@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package foo;
+
+import "google/api/annotations.proto";
+import "buf/validate/validate.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+
+option go_package = "github.com/nmittler/bufv2test/gen-protogo/foo;foopb";
+
+message Foo {
+  option (google.api.resource) = {
+    type: "foo.com/Foo"
+    pattern: "foos/{foo}"
+    plural: "Foos"
+  };
+
+  string name = 1;
+
+  string display_name = 2;
+}
+
+message CreateFooRequest {
+  string foo_id = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z][-a-z0-9]{4,28}[a-z0-9]$"
+  ];
+
+  Foo foo = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true
+  ];
+}
+
+service FooService {
+  rpc CreateFoo(CreateFooRequest) returns (Foo) {
+    option (google.api.http) = {
+      post: "/foos"
+      body: "foo"
+    };
+  }
+}

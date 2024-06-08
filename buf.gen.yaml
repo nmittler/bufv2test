@@ -1,0 +1,22 @@
+version: v2
+managed:
+  enabled: true
+
+plugins:
+  - remote: buf.build/protocolbuffers/go
+    out: gen-protogo
+    opt: paths=source_relative
+  - remote: buf.build/grpc/go
+    out: gen-protogo
+    opt:
+      - paths=source_relative
+      - require_unimplemented_servers=true
+  - remote: buf.build/grpc-ecosystem/grpc-gateway
+    out: gen-protogo
+    opt: paths=source_relative
+  - remote: buf.build/grpc-ecosystem/openapiv2
+    out: gen-openapi
+    #strategy: all
+    opt: # Full list of options: https://github.com/grpc-ecosystem/grpc-gateway/blob/main/protoc-gen-openapiv2/main.go
+      - allow_merge=true
+      - merge_file_name=v1alpha
